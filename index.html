@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset=utf-8 />
+        <title>A simple chat client based on the WebSocket protocol. Uses HTML5, jQuery and CSS.</title>
+        <meta name="author" content="Florian Wolters, Steffen Sch&uuml;tte" />
+        <meta name="description" content="A simple chat client based on the WebSocket protocol. Uses HTML5, jQuery and CSS." />
+        <meta name="keywords" content="WebSocket, WebSockets, Chat Client, Chat" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+
+        <!-- Import Cascading StyleSheet (CSS). -->
+        <link rel="stylesheet" type="text/css" href="assets/css/lib/normalize.min.css" />
+        <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+    </head>
+    <body>
+        <header>
+            <h1>A simple Chat Client based on WebSockets</h1>
+            <p>This is a multi-user chat client that uses <a href="http://tools.ietf.org/html/rfc6455">The WebSocket Protocol</a>. It makes use of HTML5, CSS and the JavaScript library <a href="http://jquery.com">jQuery</a>.
+        </header>
+
+        <div role="main">
+            <div id="chatclient">
+                <fieldset>
+                    <legend>Connection</legend>
+                    <button id="connect">Connect</button>
+                    <button id="disconnect">Disconnect</button>
+                </fieldset>
+                <fieldset>
+                    <legend>Chat</legend>
+                    <label for="uid">Username:</label>
+                    <input id="uid" type="text" value="Anonymous" />
+
+                    <!-- Filled by jQuery. -->
+                    <ul id="chatlog"></ul>
+
+                    <label for="msg">Message:</label>
+                    <input id="msg" type="text" />
+                    <button id="send">Send</button>
+                </fieldset>
+            </div>
+        </div>
+
+        <footer>
+            <p>Copyright 2012  Florian Wolters, Steffen Sch&uuml;tte</p>
+            <p>See <a href="https://github.com/FlorianWolters/WebSocket-Chat-Client">FlorianWolters/WebSocket-Chat-Client</a> for the source code of this WebSocket chat client.</p>
+            <p>See <a href="https://github.com/SteffenSchuette/WebSocket-Chat-Server">SteffenSchuette/WebSocket-Chat-Server</a> for an example WebSocket chat server implemented via the C# library <a href="http://github.com/statianzo/Fleck">Fleck</a>.</p>
+            <p>See <a href="http://tools.ietf.org/html/rfc6455">The WebSocket Protocol</a> RFC for detailed information.</p>
+            
+        </footer>
+
+        <!-- Import JavaScript (JS). -->
+
+        <script src="assets/js/lib/jquery-1.7.2.min.js"></script>
+        <script src="assets/js/configuration.js"></script>
+        <script src="assets/js/chatclient.js"></script>
+    </body>
+</html>
