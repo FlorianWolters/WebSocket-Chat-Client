@@ -21,7 +21,7 @@ See [SteffenSchuette/WebSocket-Chat-Server](http://github.com/SteffenSchuette/We
 
 # Chat Protocol
 
-All you need to know to implement you own WebSocket chat server is the following:
+All you need to know to implement your own WebSocket chat server is the following:
 
 ```js
 var jsonObj = {
