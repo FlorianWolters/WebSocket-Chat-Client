@@ -30,7 +30,7 @@
                     <label for="uid">Username:</label>
                     <input id="uid" type="text" value="Anonymous" />
 
-                    <!-- Filled by jQuery. -->
+                    <!-- Filled via JavaScript. -->
                     <ul id="chatlog"></ul>
 
                     <label for="msg">Message:</label>
@@ -43,15 +43,15 @@
         <footer>
             <p>Copyright 2012  Florian Wolters, Steffen Sch&uuml;tte</p>
             <p>See <a href="https://github.com/FlorianWolters/WebSocket-Chat-Client">FlorianWolters/WebSocket-Chat-Client</a> for the source code of this WebSocket chat client.</p>
+            <p>See <a href="https://github.com/FlorianWolters/WebSocket-Chat-Server">FlorianWolters/WebSocket-Chat-Server</a> for an example WebSocket chat server implemented via the PHP library <a href="http://socketo.me">Ratchet</a>.</p>
             <p>See <a href="https://github.com/SteffenSchuette/WebSocket-Chat-Server">SteffenSchuette/WebSocket-Chat-Server</a> for an example WebSocket chat server implemented via the C# library <a href="http://github.com/statianzo/Fleck">Fleck</a>.</p>
             <p>See <a href="http://tools.ietf.org/html/rfc6455">The WebSocket Protocol</a> RFC for detailed information.</p>
-            
         </footer>
 
         <!-- Import JavaScript (JS). -->
 
-        <script src="assets/js/lib/jquery-1.7.2.min.js"></script>
-        <script src="assets/js/configuration.js"></script>
-        <script src="assets/js/chatclient.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="assets/js/lib/jquery-1.7.2.min.js"><\/script>')</script>
+        <script src="assets/js/chat-client.js"></script>
     </body>
 </html>
