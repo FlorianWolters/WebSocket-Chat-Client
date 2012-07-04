@@ -1,0 +1,7 @@
+{
+    "host"     : "localhost",
+    "resource" : "",
+    "port"     : "8000",
+    "secure"   : "false",
+    "protocols": []
+}

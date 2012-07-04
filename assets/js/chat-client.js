@@ -13,16 +13,41 @@
  * along with this program.  If not, see http://gnu.org/licenses/lgpl.txt.
  *
  * @fileOverview A simple chat client based on the WebSocket protocol.
- * @author       <a href="mailto:florian.wolters.85@googlemail.com">Florian Wolters</a>
+ * @author       <a href="mailto:wolters.fl@gmail.com">Florian Wolters</a>
  * @author       <a href="mailto:steffen.schuette@web.de">Steffen Schütte</a>
  * @copyright    2012 Florian Wolters, Steffen Schütte
  * @license      http://gnu.org/licenses/lgpl.txt GNU LGPL
- * @version      0.1.0-beta
+ * @version      0.1.1-beta
  * @see          <a href="http://github.com/FlorianWolters/WebSocket-Chat-Client">FlorianWolters/WebSocket-Chat-Client</a>
  * @since        File available since Release 0.1.0
  * @todo         This is a quick & dirty implementation. Should be refactored to OOP.
  */
 $(document).ready(function() {
+
+    /**
+     * The JSON configuration.
+     *
+     * Provides the following objects:
+     *
+     * * config.host      The hostname for the WebSocket connection.
+     * * config.resource  The hostname for the WebSocket connection.
+     * * config.port      The port for the WebSocket connection.
+     * * config.secure    Whether to use a secure WebSocket connection.
+     * * config.protocols The supported protocols.
+     */
+    var config = null;
+
+    $.ajax({
+        url: 'config.json',
+        async: false,
+        dataType: 'json',
+        success: function(response) {
+            config = response;
+        },
+        error: function(response) {
+            alert('Unable to read the JSON configuration file.');
+        }
+    });
 
     /**
      * Adds a line (HTML list item <li> element) with a specified text and
@@ -122,7 +147,7 @@ $(document).ready(function() {
 
                     if (jsonObj.ts) {
                         var dateTime = new Date(jsonObj.ts * 1000);
-                        
+
                         var year = dateTime.getFullYear();
                         var month = prependZeroIfLessThanTen((dateTime.getMonth() + 1));
                         var day = prependZeroIfLessThanTen(dateTime.getDate());
@@ -247,14 +272,17 @@ $(document).ready(function() {
          *
          * @type string
          */
-        var uri = config.scheme + '://' + config.hostname + ':' + config.port;
+        var uri = '';
+
+        uri = ("true" == config.secure) ? 'wss' : 'ws';
+        uri += '://' + config.host + ':' + config.port + config.resource;
 
         /**
          * The WebSocket connection.
          *
          * @type WebSocket
          */
-        var socket = connect(uri);;
+        var socket = connect(uri);
 
         // Event handler
 
