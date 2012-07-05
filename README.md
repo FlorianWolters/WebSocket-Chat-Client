@@ -1,54 +1,61 @@
 # WebSocket-Chat-Client
 
-A simple chat client based on the WebSocket protocol. Uses HTML5, jQuery and CSS.
+A chat client using the WebSocket protocol.
 
-See [SteffenSchuette/WebSocket-Chat-Server](http://github.com/SteffenSchuette/WebSocket-Chat-Server) for an example WebSocket chat server implemented via the C# library [Fleck](http://github.com/statianzo/Fleck).
+This is a multi-user chat client that implements [The WebSocket Protocol][1]. It makes use of [HTML5][10], [CSS][11] and the JavaScript library [jQuery][2].
+
+The following compatible chat server implementations do currently exist:
+
+* [FlorianWolters/PHP-WebSocket-Chat-Server][3]: A WebSocket chat server implemented with the [PHP][4] library [Ratchet][5].
+* [SteffenSchuette/WebSocket-Chat-Server][4] for an example WebSocket chat server implemented with the [C#][7] library [Fleck][8].
 
 ## Features
 
-* The chat client automatically tries to establish a connection to the chat server on startup.
-* The user can connect and disconnect the client via buttons manually.
 * The user can enter a username to use in the chat.
+* The user can connect and disconnect the client via two buttons.
+* Outputs status messages, warnings and errors in the chatlog.
 * Chat messages can be send via the return key on the keyboard or a button.
-* A chat message (and the output) consists of the timestamp, the username and the text of the message.
-* Application Programming Interface (API) documentation with [JSDoc](http://code.google.com/p/jsdoc-toolkit/w)
+* A chat message (and the output) consists of the the username, the datetime and the text of the message.
+* Application Programming Interface (API) documentation with [JSDoc][9].
+* Valid [HTML5][10].
+* Valid [CSS][11].
 
-## Usage
+## Installation/Usage
 
 1. [optional] Start a WebSocket chat server which implements the defined chat protocol (see below).
-2. [optional] Edit the connection options in the configuration file `assets/js/configuration.js` to match with the WenSocket chat server.
+2. [optional] Edit the connection options in the configuration file `/config.json` to point to the desired WebSocket chat server.
 3. Start the `index.html` in a web browser.
-
-# Chat Protocol
-
-All you need to know to implement your own WebSocket chat server is the following:
-
-```js
-var jsonObj = {
-    // The current UNIX timestamp.
-    'ts': Math.round(Date.now() / 1000),
-    // The name of the chat user.
-    'uid': uid,
-    // The text of the chat message.
-    'msg': msg
-};
-```
-
-You expect a JSON object that contains three elements (`ts`, `uid`, `msg`). After the processing of the incoming message you have to send a multicast (or broadcast) to all connected chat clients (including the one that has send the message).
-
-**NOTE:** The message sent, has to be identical to the JSON object described above.
 
 ## Used Technologies
 
-* [jQuery](http://jquery.com) v1.7.2
-* [HTML5](http://w3.org/TR/html5)
-* [CSS](http://w3.org/Style/CSS)
-* [normalize.css](http://necolas.github.com/normalize.css)
+* [jQuery][2] v1.7.2
+* [HTML5][10]
+* [CSS][11]
+* [normalize.css][12]
 
-## TODO
+## Chat Protocol
 
-* Refactor JavaScript source code (`assets/js/chatclient.js` and `assets/js/configuration.js`) to use object-oriented programming (OOP).
-* Correct JSDoc documentation (currently only the file comments appear within the HTML output of jsdoc-toolkit).
+All you need to know to implement your own WebSocket chat server is the following:
+
+* The client expects chat messages in the following [JavaScript Object Notation (JSON)][13] format:
+
+  ```json
+  {
+      "ts" : "2012-07-05 00:00:00",
+      "uid": "Florian Wolters",
+      "msg": "hello, world"
+  }
+  ```
+
+* The chat server expects a single string as the message from the chat client. In the example above, the chat message sent to the chat server has been `hello, world`.
+* The client sends the username after a connection has been established (on the `onopen` event). In the example above, the first chat message sent to the chat server has been `Florian Wolters`.
+* After the processing of the message from the chat client one has to send a multicast (or broadcast) message to all connected chat clients (including the one that has send the message).
+
+## Roadmap/TODO
+
+* Improve documentation.
+* Refactoring of the JavaScript source code (`assets/js/chat-client.js`): Use object-oriented programming (OOP).
+* Correct [JSDoc][9] documentation (currently only the file comments appear within the HTML output of jsdoc-toolkit).
 
 ## License
 
@@ -57,3 +64,19 @@ This program is free software: you can redistribute it and/or modify it under th
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License along with this program. If not, see http://gnu.org/licenses/lgpl.txt.
+
+
+
+[1]: http://tools.ietf.org/html/rfc6455
+[2]: http://jquery.com
+[3]: https://github.com/FlorianWolters/PHP-WebSocket-Chat-Server
+[4]: http://php.net
+[5]: http://socketo.me
+[6]: https://github.com/SteffenSchuette/WebSocket-Chat-Server
+[7]: http://msdn.microsoft.com/vcsharp
+[8]: https://github.com/statianzo/Fleck
+[9]: http://code.google.com/p/jsdoc-toolkit/w
+[10]: http://w3.org/TR/html5
+[11]: http://w3.org/Style/CSS
+[12]: https://necolas.github.com/normalize.css
+[13]: http://json.org
