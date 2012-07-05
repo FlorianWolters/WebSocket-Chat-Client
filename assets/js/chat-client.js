@@ -16,24 +16,69 @@
  * @author       <a href="mailto:wolters.fl@gmail.com">Florian Wolters</a>
  * @author       <a href="mailto:steffen.schuette@web.de">Steffen Schütte</a>
  * @copyright    2012 Florian Wolters, Steffen Schütte
- * @license      http://gnu.org/licenses/lgpl.txt GNU LGPL
+ * @license      http://gnu.org/licenses/lgpl.txt LGPL-3.0+
  * @version      0.1.1-beta
  * @see          <a href="http://github.com/FlorianWolters/WebSocket-Chat-Client">FlorianWolters/WebSocket-Chat-Client</a>
  * @since        File available since Release 0.1.0
- * @todo         This is a quick & dirty implementation. Should be refactored to OOP.
  */
 $(document).ready(function() {
 
     /**
+     * Appends a chat message with the specified username, the specified
+     * datetime and the specified text to the chatlog.
+     *
+     * @param {string} username The username of the user who wrote the message.
+     * @param {string} datetime The datetime of the message.
+     * @param {string} text     The text of the message.
+     *
+     * @returns {void}
+     */
+    function addChatLineToChatlog(username, datetime, text) {
+        addLineToChatlog(
+            '<span class="uid">' + username + '</span>@<span class="ts">'
+                + datetime + '</span>: ' + text,
+            'message'
+        );
+    }
+
+    /**
+     * Appends a line (HTML list item <li> element) with a specified text and
+     * a specified type to the chatlog.
+     *
+     * @param {string} text The text to append.
+     * @param {string} type The output type ('info', 'warning' or 'error').
+     *
+     * @returns {void}
+     */
+    function addLineToChatlog(text, type) {
+        $('#chatlog').append('<li class="' + type + '">' + text + '</li>');
+    }
+
+    /**
+     * Refreshes the state of the form user interface (UI) elements.
+     *
+     * @param {WebSocketConnection} ws The WebSocketConnection.
+     *
+     * @returns {void}
+     */
+    function refreshUserInterface(ws) {
+        var disabled = ws.isClosed();
+        $('#uid').attr('disabled', !disabled);
+        $('#connect').attr('disabled', !disabled);
+        $('#disconnect').attr('disabled', disabled);
+        $('#msg').attr('disabled', disabled);
+        $('#send').attr('disabled', disabled);
+    }
+
+    /**
      * The JSON configuration.
      *
-     * Provides the following objects:
-     *
-     * * config.host      The hostname for the WebSocket connection.
-     * * config.resource  The hostname for the WebSocket connection.
-     * * config.port      The port for the WebSocket connection.
-     * * config.secure    Whether to use a secure WebSocket connection.
-     * * config.protocols The supported protocols.
+     * * config.host      The name of the host to connect to.
+     * * config.resource  The name of the resource to connect to.
+     * * config.port      The port to connect to.
+     * * config.secure    Whether to use a secure connection.
+     * * config.protocols One or more sub-protocols that the server must support
+     *                    for the connection to be successful.
      */
     var config = null;
 
@@ -45,78 +90,52 @@ $(document).ready(function() {
             config = response;
         },
         error: function(response) {
-            alert('Unable to read the JSON configuration file.');
+            $('#chatclient').fadeOut('slow');
+            $('<p>Unable to read the JSON configuration file.</p>')
+                .appendTo('[role="main"]');
         }
     });
 
-    /**
-     * Adds a line (HTML list item <li> element) with a specified text and
-     * specified type to the chatlog.
-     *
-     * @param {string} text The text to add.
-     * @param {string} type The output type, e.g. 'notice', 'warning', 'error'.
-     *
-     * @returns {void}
-     */
-    function addLineToChatlog(text, type) {
-        $('#chatlog').append('<li class="' + type + '">' + text + '</li>');
-    }
-
-    /**
-     * Prepends a specified string to a specified number if it is less than the
-     * specified number.
-     *
-     * @param {integer} number   The number to check and prepend the string to.
-     * @param {integer} lessThan The maximum number.
-     * @param {string}  text     The text to prepend to the number if the number
-     *                           is less that the maximum number.
-     *
-     * @returns {string} The corrected number.
-     */
-    function prependIfLessThan(number, lessThan, text) {
-        if (number < lessThan) {
-            number = text + number;
-        }
-
-        return number;
-    }
-
-    function prependZeroIfLessThanTen(number) {
-        return prependIfLessThan(number, 10, '0');
-    }
-
-    addLineToChatlog('The WebSocket client has been loaded.', 'notice');
+    addLineToChatlog('The chat client has been loaded.', 'info');
 
     if (!('WebSocket' in window)) {
         $('#chatclient').fadeOut('slow');
         $('<p>The web browser does not support the WebSocket protocol.</p>')
-            .appendTo('[role="main"]');
+            .prependTo('[role="main"]');
     } else {
-        // The web browser supports WebSockets.
+        // The web browser does support the WebSocket protocol.
+        var ws = new WebSocketConnection(
+            config.host, config.port, config.resource, config.secure,
+            config.protocols
+        );
+
+        //$('<p>' . ws.uri . '</p>').appendTo('[role="main"]');
+        refreshUserInterface(ws);
+
+        // Event handler
 
         /**
-         * Connects to the WebSocket server and sets the correct state of the
-         * user interface.
+         * Create a new WebSocket if the "Connect" button is clicked.
          *
-         * @returns {WebSocket} The WebSocket connection on success; `null`
-         *                      otherwise.
-         * @function
+         * @event
          */
-        function connect(uri) {
-            /**
-             * The WebSocket connection.
-             *
-             * @type WebSocket
-             */
-            var socket = null;
+        $('#connect').click(function() {
+            if (ws.isOpened()) {
+                addLineToChatlog('The connection is already open.', 'warning');
+                return;
+            }
+
+            var uid = $('#uid').val();
+            if ('' == uid) {
+                addLineToChatlog('Please enter an username.', 'warning');
+                return;
+            }
+
+            addLineToChatlog('Trying to connect to "' + ws.uri + '"...', 'info');
 
             try {
                 // Triggers event onopen on success.
-                socket = new WebSocket(uri);
-
-                $('#connect').attr('disabled', true);
-                $('#disconnect').attr('disabled', false);
-                $('#send').attr('disabled', false);
+                ws.open();
 
                 // WebSockets is an event-driven API.
 
@@ -125,11 +144,12 @@ $(document).ready(function() {
                  *
                  * @event
                  */
-                socket.onopen = function() {
-                    addLineToChatlog(
-                        'Connection opened (socket status: '
-                            + socket.readyState + ').', 'open'
-                    );
+                ws.socket.onopen = function() {
+                    refreshUserInterface(ws);
+                    addLineToChatlog('The connection has been opened.', 'info');
+                    // Send the username to authenticate the chat client at the
+                    // chat server.
+                    ws.send(uid);
                 }
 
                 /**
@@ -137,32 +157,9 @@ $(document).ready(function() {
                  *
                  * @event
                  */
-                socket.onmessage = function(json) {
-                    var jsonObj = $.parseJSON(json.data);
-                    var data = '';
-
-                    if (jsonObj.uid) {
-                        data += '<span class="uid">' + jsonObj.uid + '</span>';
-                    }
-
-                    if (jsonObj.ts) {
-                        var dateTime = new Date(jsonObj.ts * 1000);
-
-                        var year = dateTime.getFullYear();
-                        var month = prependZeroIfLessThanTen((dateTime.getMonth() + 1));
-                        var day = prependZeroIfLessThanTen(dateTime.getDate());
-                        var hours = prependZeroIfLessThanTen(dateTime.getHours());
-                        var minutes = prependZeroIfLessThanTen(dateTime.getMinutes());
-                        var seconds = prependZeroIfLessThanTen(dateTime.getSeconds());
-                        var dateString = year + '-' + month + '-' + day + ' '
-                            + hours + ':' + minutes + ':' + seconds
-
-                        data += ' @ <span class="ts">' + dateString + '</span>';
-                    }
-
-                    data += ' : ' + jsonObj.msg;
-
-                    addLineToChatlog(data, 'message');
+                ws.socket.onmessage = function(msg) {
+                    var json = $.parseJSON(msg.data);
+                    addChatLineToChatlog(json.uid, json.ts, json.msg);
                 }
 
                 /**
@@ -170,41 +167,65 @@ $(document).ready(function() {
                  *
                  * @event
                  */
-                socket.onclose = function() {
-                    addLineToChatlog(
-                        'Connection closed (socket status: '
-                            + socket.readyState + ').', 'close'
-                    );
+                ws.socket.onclose = function() {
+                    refreshUserInterface(ws);
+                    addLineToChatlog('The connection has been closed.', 'info');
                 }
             } catch (ex) {
                 addLineToChatlog('Exception: ' + ex, 'error');
             }
-
-            return socket;
-        }
+        });
 
         /**
-         * Disconnect from the WebSocket server and sets the correct state of
-         * the user interface.
+         * Close the WebSocket if the "Disconnect" button is clicked.
          *
-         * @returns {void}
-         * @function
+         * @event
          */
-        function disconnect(socket) {
-            if (false == isOpened(socket)) {
-                addLineToChatlog(
-                    'The WebSocket client is not connected.', 'warning'
-                );
+        $('#disconnect').click(function() {
+            if (ws.isClosed()) {
+                addLineToChatlog('The connection is not opened.', 'warning');
                 return;
             }
 
-            // Triggers event onclose on success.
-            socket.close();
+            try {
+                ws.close();
+            } catch (ex) {
+                addLineToChatlog('Exception: ' + ex, 'error');
+            }
 
-            $('#disconnect').attr('disabled', true);
-            $('#send').attr('disabled', true);
-            $('#connect').attr('disabled', false);
-        }
+            refreshUserInterface(ws);
+        });
+
+        /**
+         * Sets the state of the "Send" button in dependency of the value of the
+         * "Message" input text field.
+         *
+         * @event
+         * @todo This is extremely slow, hence commented. Find out why.
+         */
+        //$('#msg').change(function() {
+        //    $('#send').attr('disabled', !$(this).val());
+        //});
+
+        /**
+         * Send data via the WebSocket if the "Send" button is clicked.
+         *
+         * @event
+         */
+        $('#send').click(function() {
+            handleSend();
+        });
+
+        /**
+         * Send data via the WebSocket if the "Return" keyboard key is pressed.
+         *
+         * @event
+         */
+        $('#text').keypress(function(event) {
+            if (event.keyCode == '13') {
+                handleSend();
+            }
+        });
 
         /**
          * Sends data via the specified WebSocket and sets the correct state of
@@ -215,114 +236,26 @@ $(document).ready(function() {
          * @returns {void}
          * @function
          */
-        function send(socket) {
-            if (false == isOpened(socket)) {
+        function handleSend() {
+            if (ws.isClosed()) {
                 addLineToChatlog('Establish a connection first.', 'warning');
                 return;
             }
 
-            var uidObj = $('#uid');
-            var msgObj = $('#msg');
-
-            var uid = uidObj.val();
-            var msg = msgObj.val();
-
-            if (uid == '') {
-                addLineToChatlog('Please enter an username.', 'warning');
-                return;
-            }
-
-            if (msg == '') {
+            var msgInputField = $('#msg');
+            var msg = msgInputField.val();
+            if ('' == msg) {
                 addLineToChatlog('Please enter a message.', 'warning');
                 return;
             }
 
-            // This is the actual protocol of the chat client.
-            var jsonObj = {
-                // The current UNIX timestamp.
-                'ts': Math.round(Date.now() / 1000),
-                // The name of the chat user.
-                'uid': uid,
-                // The text of the chat message.
-                'msg': msg
-            };
-
             try {
-                socket.send(JSON.stringify(jsonObj));
-                msgObj.val('');
+                ws.send(msg);
+                msgInputField.val('');
             } catch (ex) {
                 addLineToChatlog('Exception: ' + ex, 'error');
             }
         }
-
-        /**
-         * Checks whether the specified WebSocket is opened.
-         *
-         * @param {WebSocket} socket The WebSocket to check.
-         *
-         * @returns {boolean} `true` if the WebSocket is opened; `false` otherwise.
-         * @function
-         */
-        function isOpened(socket) {
-            return (null != socket) && (socket.readyState == WebSocket.OPEN);
-        }
-
-        /**
-         * The WebSocket URI string.
-         *
-         * @type string
-         */
-        var uri = '';
-
-        uri = ("true" == config.secure) ? 'wss' : 'ws';
-        uri += '://' + config.host + ':' + config.port + config.resource;
-
-        /**
-         * The WebSocket connection.
-         *
-         * @type WebSocket
-         */
-        var socket = connect(uri);
-
-        // Event handler
-
-        /**
-         * Create a new WebSocket if the "Connect" button is clicked.
-         *
-         * @event
-         */
-        $('#connect').click(function() {
-            socket = connect(uri);
-        });
-
-        /**
-         * Send data via the WebSocket if the "Send" button is clicked.
-         *
-         * @event
-         */
-        $('#send').click(function() {
-            send(socket);
-        });
-
-        /**
-         * Send data via the WebSocket if the "Return" keyboard key is pressed.
-         *
-         * @event
-         */
-        $('#text').keypress(function(event) {
-            if (event.keyCode == '13') {
-                send(socket);
-            }
-        });
-
-        /**
-         * Close the WebSocket if the "Disconnect" button is clicked.
-         *
-         * @event
-         */
-        $('#disconnect').click(function() {
-            disconnect(socket);
-        });
     }
 
 });
