@@ -17,13 +17,13 @@
  * along with this program.  If not, see http://gnu.org/licenses/lgpl.txt.
  *
  * @project      A simple chat client based on the WebSocket protocol.
- * @version      0.1.0-beta
+ * @version      0.1.1-beta
  * @package      xhtml-css
- * @author       Florian Wolters <florian.wolters.85@googlemail.com>
- * @author       Steffen Schütte <parvus23@googlemail.com>
+ * @author       Florian Wolters <wolters.fl@googlemail.com>
+ * @author       Steffen Schütte <steffen.schuette@web.de>
  * @copyright    2012 Florian Wolters, Steffen Schütte
  * @cssdoc       version 1.0-pre
- * @license      http://gnu.org/licenses/lgpl.txt GNU LGPL
+ * @license      http://gnu.org/licenses/lgpl.txt LGPL-3.0+
  * @media        all
  * @valid        true
  */
@@ -47,9 +47,12 @@ body > footer {
     overflow: hidden;
     margin-top: 2em;
     border-top: 0.2em solid #CCCCCC;
+    font-size: 80%;
+}
+
+legend {
+    font-weight: bold;
     font-size: 90%;
-    color: #CCCCCC;
-    background-color: inherit;
 }
 
 /* Site main content */
@@ -60,51 +63,44 @@ body > footer {
     padding: 10px;
 }
 
+/* Chat log */
+
 #chatlog {
     list-style-type: none;
     padding: 0.5em;
     border: 1px solid black;
 }
 
-/* Chat log */
+#chatlog .uid, #chatlog .ts {
+    background-color: inherit;
+    font-size: 80%;
+}
 
 #chatlog .uid {
-    font-weight: bold;
-    background-color: inherit;
-    color: gray;
+    font-style: italic;
+    color: blue;
 }
 
 #chatlog .ts {
-    background-color: inherit;
     color: green;
-    font-size: 75%;
 }
 
-#chatlog .notice {
+#chatlog .info, #chatlog .warning, #chatlog .error {
     background-color: inherit;
-    color: green;
+    color: inherit;
+    font-family: "Courier New", monospace;
+}
+
+#chatlog .info {
+    color: gray;
 }
 
 #chatlog .warning {
     font-weight: bold;
-    background-color: inherit;
     color: orange;
 }
 
 #chatlog .error {
     font-weight: bold;
-    background-color: inherit;
     color: red;
-}
-
-#chatlog .open {
-    font-style: oblique;
-    background-color: inherit;
-    color: brown;
-}
-
-#chatlog .close {
-    font-style: oblique;
-    background-color: inherit;
-    color: blue;
 }
