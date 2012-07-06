@@ -24,7 +24,10 @@ The following compatible chat server implementations do currently exist:
 
 1. [optional] Start a WebSocket chat server which implements the defined chat protocol (see below).
 2. [optional] Edit the connection options in the configuration file `/config.json` to point to the desired WebSocket chat server.
-3. Start the `index.html` in a web browser.
+3. Serve the project directory with a webserver, e.g. [Apache HTTP Server][14] or [Internet Information Services (IIS)][15].
+4. Open the address of the previously configured webserver in a web browser.
+
+**Notice:** The project contains a `web.config` file to use with IIS. That file associates the `.json` file extension with the MIME type `application/json`.
 
 ## Used Technologies
 
@@ -80,3 +83,5 @@ You should have received a copy of the GNU Lesser General Public License along w
 [11]: http://w3.org/Style/CSS
 [12]: https://necolas.github.com/normalize.css
 [13]: http://json.org
+[14]: http://httpd.apache.org
+[15]: http://iis.net
