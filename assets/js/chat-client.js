@@ -83,7 +83,7 @@ $(document).ready(function() {
     var config = null;
 
     $.ajax({
-        url: 'config.json',
+        url: 'assets/config.json',
         async: false,
         dataType: 'json',
         success: function(response) {
