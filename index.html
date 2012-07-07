@@ -47,7 +47,7 @@
                 <h2>References</h2>
                 <ul>
                     <li><a href="https://github.com/FlorianWolters/WebSocket-Chat-Client">FlorianWolters/WebSocket-Chat-Client</a>: The source code of this WebSocket chat client.</li>
-                    <li><a href="https://github.com/FlorianWolters/PHP-WebSocket-Chat-Server">FlorianWolters/PHP-WebSocket-Chat-Server</a>: A WebSocket chat server implemented with the <h href="http://php.net">PHP</a> library <a href="http://socketo.me">Ratchet</a>.</li>
+                    <li><a href="https://github.com/FlorianWolters/PHP-WebSocket-Chat-Server">FlorianWolters/PHP-WebSocket-Chat-Server</a>: A WebSocket chat server implemented with the <a href="http://php.net">PHP</a> library <a href="http://socketo.me">Ratchet</a>.</li>
                     <li><a href="https://github.com/SteffenSchuette/WebSocket-Chat-Server">SteffenSchuette/WebSocket-Chat-Server</a>: A WebSocket chat server implemented with the <a href="http://msdn.microsoft.com/vcsharp">C#</a> library <a href="http://github.com/statianzo/Fleck">Fleck</a>.</li>
                 </ul>
             </div>
@@ -58,10 +58,15 @@
             <p><a href="http://gnu.org/licenses/lgpl.txt">LGPL-3.0+</a></p>
         </footer>
 
-        <!-- Import JavaScript (JS). -->
+        <!-- Import JavaScript (JS) files. -->
 
+        <!--
+            Import jQuery from Google Content Delivery Network (CDN).
+            Fall back to the local copy if necessary.
+        -->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="assets/js/lib/jquery-1.7.2.min.js"><\/script>')</script>
+
         <script src="assets/js/WebSocketConnection.js"></script>
         <script src="assets/js/chat-client.js"></script>
     </body>
