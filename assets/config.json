@@ -1,5 +1,5 @@
 {
-    "host"     : "localhost",
+    "host"     : "85.214.210.68",
     "resource" : "",
     "port"     : "8000",
     "secure"   : "false",
